@@ -1,0 +1,311 @@
+// Import Inter font from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// Import Teko font from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap');
+
+// CSS Custom Properties
+:root {
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-teko: 'Teko', sans-serif;
+}
+
+// Reset and base styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+// Main festival hero section
+.festival-hero {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Background panes container
+.background-panes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  
+  // Use dynamic columns that stretch to fill the entire width perfectly
+  // Each pane will be exactly screenWidth / numPanes wide
+  grid-template-columns: repeat(var(--num-panes, 12), 1fr);
+  
+  z-index: 1;
+  // Enable smooth animations for pane sliding
+  will-change: transform;
+}
+
+// Individual pane styling
+.pane {
+  position: relative;
+  display: block;
+  height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  transform-origin: bottom;
+  transition: background-color 1.2s ease-in-out;
+  // Enable smooth animations for pane sliding
+  will-change: transform;
+  
+
+
+  // Subtle gradient overlay for depth
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.05) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &:hover {
+    transform: scale(1.02);
+    z-index: 2;
+  }
+}
+
+// Gradient overlay for animation
+.pane-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(0, 0, 0, 0.05) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateY(100%);
+  z-index: 2;
+  pointer-events: none;
+  transition: transform 0.1s ease-out;
+
+  // Add a subtle darker overlay at the bottom for smoother transition
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.04) 50%, transparent 100%);
+    pointer-events: none;
+  }
+}
+
+// Day labels within panes
+.pane-day {
+  position: absolute;
+  top: 2rem;
+  right: 1rem;
+  font-family: var(--font-inter);
+  color: white;
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s ease;
+
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  transition: all 0.3s ease;
+
+}
+
+// Navigation styling
+.navigation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 2rem 3rem;
+  pointer-events: none;
+
+  .nav-item {
+    pointer-events: auto;
+    font-family: var(--font-inter);
+    color: white;
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    // text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  }
+
+  .home-link {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
+}
+
+
+
+// Main title styling
+.main-title {
+  position: fixed;
+  bottom: 0%;
+  left: 0%;
+  width: 100%;
+  transform: translateX(-50%);
+  font-family: var(--font-teko);
+  font-size: max(15vw, 100px);
+  color: white;
+  text-transform: uppercase;
+  z-index: 5;
+  line-height: 0.5;
+  font-weight: 500;
+  transform-origin: bottom;
+  transform: scale(1, 2);
+  pointer-events: none;
+}
+
+// Play button styling
+.play-button {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+  padding: 1rem 0.5rem;
+  // width: 120px;
+  // height: 120px;
+  border-radius: 10px;
+  border: 2px solid white;
+  background: transparent;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // transition: all 0.3s ease;
+
+
+  .play-text {
+    font-family: var(--font-inter);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .background-panes {
+    // grid-template-columns: repeat(6, 1fr);
+  }
+
+  .navigation {
+    padding: 1.5rem 1rem;
+  }
+
+  .main-title {
+    line-height: 0.8;
+    font-size: max(10vw, 150px);
+  }
+
+  .play-button {
+    bottom: 2rem;
+    right: 2rem;
+
+    .play-text {
+      font-size: 0.7rem;
+    }
+  }
+
+  .tab-content {
+    width: 100%;
+    right: -100%;
+  }
+
+  .pane-day {
+    font-size: 0.8rem;
+    top: 1.5rem;
+    right: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .background-panes {
+    // grid-template-columns: repeat(4, 1fr);
+  }
+
+  .navigation {
+    padding: 1rem 0.5rem;
+  }
+
+  .main-title {
+    line-height: 0.8;
+  }
+
+  .play-button {
+    bottom: 1.5rem;
+    right: 1.5rem;
+
+
+    .play-text {
+      font-size: 0.6rem;
+    }
+  }
+
+  .pane-day {
+    font-size: 0.7rem;
+    top: 1rem;
+    right: 0.25rem;
+  }
+}
+
+// Animation keyframes for additional effects
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+}

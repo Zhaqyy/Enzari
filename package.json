@@ -1,0 +1,32 @@
+{
+  "name": "cool",
+  "description": "A showcase for cool",
+  "author": "Shuaib Abdulrazaq (https://github.com/Zhaqyy)",
+  "type": "module",
+  "dependencies": {
+    "@gsap/react": "^2.1.1",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.13",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^6.26.2",
+    "react-transition-group": "^4.4.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "sass-embedded": "^1.83.1",
+    "vite": "^5.0.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "devHost": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

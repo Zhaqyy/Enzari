@@ -1,0 +1,154 @@
+html.lenis, html.lenis body {
+    height: auto;
+  }
+  
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  ::-moz-selection {
+    background: gray;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+  }
+  
+  ::selection {
+    background: gray;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: inherit;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 99px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background: inherit;
+  }
+  
+  [data-hidden] {
+    opacity: 0;
+  }
+  
+
+
+  /* kufam-regular */
+@font-face {
+  font-display: swap;
+  font-family: "Kufam";
+  font-style: normal;
+  /* // font-weight: 400; */
+  src: url("/Font/kufam.woff2") format("woff2");
+}
+/* //   @font-face {
+//     font-family: 'Kufam';
+//     src:
+//       url('./Font/kufam.woff2')
+//       format(‘woff2 supports variations’),
+//       url('./Font/kufamVar.woff2')
+//       format('woff2-variations');
+//     // font-stretch: 25% 150%;
+//     // font-style: oblique 0deg 10deg;
+//     font-weight: 100 900;
+//     font-display: swap;
+//   }
+/* krona-one-regular */
+/* // @font-face {
+//     font-display: swap;
+//     font-family: 'Krona One';
+//     font-style: normal;
+//     font-weight: 400;
+//     src: url('./Font/krona.woff2') format('woff2');
+//   } */ 
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-width: 100%;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --accent: #141414;
+  --secAccent: #f1ccba;
+  --dot: #3c3c3c;
+  --bg: #0d0d0d;
+  --border: rgba(128, 128, 128, 0.25);
+  --bRadius: 24px;
+  background-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+}
+
+#root {
+  background-position: center;
+  background-size: cover;
+  height: auto;
+min-height: 100vh;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 400;
+  font-synthesis: none;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+}
+ul {
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+button {
+  cursor: pointer;
+  all: unset;
+}
+h1 {
+  font-size: clamp(1rem, 5.333vw + 0.333rem, 1.5rem);
+  text-transform: uppercase;
+  /* //   font-family: "krona One", helvetica neue, helvetica, arial, sans-serif; */
+  font-weight: 600;
+}
+h2 {
+  font-size: clamp(1rem, 5.333vw + 0.333rem, 1.25rem);
+  text-transform: uppercase;
+  /* //   font-family: "krona One", helvetica neue, helvetica, arial, sans-serif; */
+  font-weight: 600;
+}
