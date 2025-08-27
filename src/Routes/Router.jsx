@@ -6,7 +6,7 @@ import Transitioner from "../Util/Transition";
 
 import Home from "../Pages/Home";
 import Dorian from "../Pages/Dorian";
-import Oto from "../Pages/OTO";
+import Oto from "../Pages/Oto";
 
 // import Header from "../Component/Header";
 
