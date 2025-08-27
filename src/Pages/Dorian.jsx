@@ -4,6 +4,7 @@ import { useGLTF, OrbitControls, MeshTransmissionMaterial } from "@react-three/d
 import { Text as DreiText } from '@react-three/drei';
 import * as THREE from "three";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import Plane from "../Scene/Plane";
 import "../Style/Dorian.scss";
 import { EffectComposer } from "@react-three/postprocessing";
@@ -11,9 +12,10 @@ import { Fluid } from "@whatisjery/react-fluid-distortion";
 import font from "/Font/uni.ttf";
 import useIsMobile from "../Util/isMobile";
 
-export function DorianModel({ mouseSpeed, mousePosition, rotationSpeed }) {
+export function DorianModel({ mouseSpeed, mousePosition, rotationSpeed, modelRef, animateIn }) {
   const { nodes, materials } = useGLTF("/Model/dorian.glb");
   const meshRefs = useRef(null);
+  const scaleRef = useRef(0);
 
   useFrame(state => {
     // Auto-rotate with mouse speed influence
@@ -23,11 +25,34 @@ export function DorianModel({ mouseSpeed, mousePosition, rotationSpeed }) {
 
     if (meshRefs.current !== null) {
       meshRefs.current.rotation.y += totalRotationSpeed * 0.01;
+      // Apply animated scale
+      meshRefs.current.scale.setScalar(scaleRef.current);
     }
   });
 
+  // GSAP animation for scale
+  useEffect(() => {
+    if (animateIn && meshRefs.current) {
+      gsap.to(scaleRef, {
+        current: 0.002,
+        duration: 1.5,
+        ease: "back.out(1.7)",
+        
+      });
+    }
+  }, [animateIn]);
+
   return (
-    <group dispose={null} ref={meshRefs} scale={0.002} rotation={[1, 0, 0]} position-z={3}>
+    <group 
+      dispose={null} 
+      ref={(el) => {
+        meshRefs.current = el;
+        if (modelRef) modelRef.current = el;
+      }} 
+      scale={0} 
+      rotation={[1, 0, 0]} 
+      position-z={3}
+    >
       <mesh geometry={nodes.Cube_0.geometry} position={[0, 0, -200]} rotation={[0, 1.571, 0]}>
         <MeshTransmissionMaterial
           ior={1}
@@ -111,14 +136,129 @@ export function DorianModel({ mouseSpeed, mousePosition, rotationSpeed }) {
 
 useGLTF.preload("/Model/dorian.glb");
 
+const Text = ({ enzariTextRef, studiosTextRef, paragraphRef, animateIn }) => {
+  const { viewport } = useThree();
+  const isMobile = useIsMobile();
+  const enzariScaleRef = useRef(1);
+  const studiosScaleRef = useRef(1);
+  const enzariOpacityRef = useRef(0);
+  const studiosOpacityRef = useRef(0);
+  const paragraphOpacityRef = useRef(0);
+  
+  // Calculate responsive font sizes based on viewport
+  const baseFontSize = Math.min(viewport.width * 0.2, 2.5);
+  const secondaryFontSize = Math.min(viewport.width * 0.165, 2);
+  
+  useFrame(() => {
+    if (enzariTextRef.current) {
+      enzariTextRef.current.scale.setScalar(enzariScaleRef.current);
+      enzariTextRef.current.material.opacity = enzariOpacityRef.current;
+    }
+    if (studiosTextRef.current) {
+      studiosTextRef.current.scale.setScalar(studiosScaleRef.current);
+      studiosTextRef.current.material.opacity = studiosOpacityRef.current;
+    }
+    if (paragraphRef.current) {
+      paragraphRef.current.material.opacity = paragraphOpacityRef.current;
+    }
+  });
+
+  // GSAP animations for text
+  useEffect(() => {
+    if (animateIn) {
+      const tl = gsap.timeline({delay: 1});
+      
+      // ENZARI text animation
+      // tl.to(enzariScaleRef, {
+      //   current: 1,
+      //   duration: 0.5,
+      //   ease: "power2.out",
+      // })
+      tl.to(enzariOpacityRef, {
+        current: 1,
+        duration: 1,
+        ease: "power2.in",
+      })
+      // .to(studiosScaleRef, {
+      //   current: 1,
+      //   duration: 0.5,
+      //   ease: "power2.out",
+      // }, '>')
+      .to(studiosOpacityRef, {
+        current: 1,
+        duration: 1,
+        ease: "power2.in",
+      }, '-=0.5')
+      .to(paragraphOpacityRef, {
+        current: 1,
+        duration: 0.8,
+        ease: "power2.in",
+      }, '>');
+    }
+  }, [animateIn]);
+  
+  return (
+      <group position-y={0.2}>
+          <DreiText
+              ref={enzariTextRef}
+              letterSpacing={-0.07}
+              font={font}
+              fontSize={baseFontSize}
+              position-y={isMobile ? 2 : 1.5}
+              color='#ffffff'
+              transparent={true}
+              opacity={0}>
+              ENZARI
+          </DreiText>
+
+          <DreiText
+              ref={studiosTextRef}
+              letterSpacing={-0.07}
+              font={font}
+              position-y={isMobile ? 0.75 : -0.5}
+              fontSize={secondaryFontSize}
+              color='#ffffff'
+              transparent={true}
+              opacity={0}>
+              STUDIOS
+          </DreiText>
+
+          <DreiText
+              ref={paragraphRef}
+              maxWidth={isMobile ? 5.5 : 7.5}
+              textAlign='center'
+              fontSize={0.18}
+              lineHeight={1.5}
+              position-y={-2}
+              color='white'
+              transparent={true}
+              opacity={0}>
+              ENZARI STUDIOS SPECIALIZES IN GENERATIVE AI, REAL-TIME INTERACTIVITY, AND IMMERSIVE WEBGL
+              EXPERIENCES.
+          </DreiText>
+      </group>
+  );
+};
+
 // Main Dorian Page Component
 const Dorian = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [mouseSpeed, setMouseSpeed] = useState(0);
+  const [animateIn, setAnimateIn] = useState(false);
   const lastMousePosition = useRef({ x: 0, y: 0 });
   const lastTime = useRef(0);
-  const descriptionFontSize = Math.min(viewport.width * 0.08, 0.18);
   const isMobile = useIsMobile();
+  
+  // Animation refs
+  const modelRef = useRef(null);
+  const enzariTextRef = useRef(null);
+  const studiosTextRef = useRef(null);
+  const paragraphRef = useRef(null);
+  const canvasRef = useRef(null);
+  
+  // GSAP context
+  const { contextSafe } = useGSAP({ scope: canvasRef });
+
   useEffect(() => {
     const handleMouseMove = event => {
       const currentTime = Date.now();
@@ -147,11 +287,20 @@ const Dorian = () => {
     };
   }, []);
 
+  // Animation sequence
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimateIn(true);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className='dorian-page'>
       <div className='dorian-content'>
       
-        <div className='dorian-canvas'>
+        <div className='dorian-canvas' ref={canvasRef}>
           <Canvas
             camera={{ position: [0, 0, 5], fov: 75 }}
             style={{
@@ -182,31 +331,24 @@ const Dorian = () => {
               fluidColor='#722F37'
               />
             </EffectComposer>
-            <Text />
+            <Text 
+              enzariTextRef={enzariTextRef}
+              studiosTextRef={studiosTextRef}
+              paragraphRef={paragraphRef}
+              animateIn={animateIn}
+            />
             <ambientLight intensity={0.5} />
             <pointLight position={[0, 0, 2.5]} intensity={100} />
-            {/* <pointLight position={[-10, -10, -10]} intensity={0.5} /> */}
 
             {/* Full-screen displacement effect */}
             <Plane width={20} height={20} position={[0, 0, 0]} active={true} />
 
             <DorianModel
-              scale={0.005}
-              position={[0, 0, 5]}
-              rotation={[1, 0, 0]}
               mouseSpeed={mouseSpeed}
               mousePosition={[mousePosition.x, mousePosition.y]}
+              modelRef={modelRef}
+              animateIn={animateIn}
             />
-             <DreiText
-              maxWidth={isMobile ? 5.5 : 7.5}
-              textAlign='center'
-              fontSize={0.18}
-              lineHeight={1.5}
-              position-y={-1.5}
-              color='white'>
-              ENZARI STUDIOS SPECIALIZES IN GENERATIVE AI, REAL-TIME INTERACTIVITY, AND IMMERSIVE WEBGL
-              EXPERIENCES.
-          </DreiText>
 
             <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} />
           </Canvas>
@@ -217,35 +359,3 @@ const Dorian = () => {
 };
 
 export default Dorian;
-
-const Text = () => {
-  const { viewport } = useThree();
-  const isMobile = useIsMobile();
-  // Calculate responsive font sizes based on viewport
-  const baseFontSize = Math.min(viewport.width * 0.2, 2.5);
-  const secondaryFontSize = Math.min(viewport.width * 0.165, 2);
-  
-  return (
-      <group position-y={0.2}>
-          <DreiText
-              letterSpacing={-0.07}
-              font={font}
-              fontSize={baseFontSize}
-              position-y={isMobile ? 2 : 1.5}
-              color='#ffffff'>
-              ENZARI
-          </DreiText>
-
-          <DreiText
-              letterSpacing={-0.07}
-              font={font}
-              position-y={isMobile ? 0.75 : -0.5}
-              fontSize={secondaryFontSize}
-              color='#ffffff'>
-              STUDIOS
-          </DreiText>
-
-         
-      </group>
-  );
-};

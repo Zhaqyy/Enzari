@@ -67,9 +67,9 @@ const Plane = ({ width, height, active, ...props }) => {
         uOilSpillOffset: { value: 0.0 }, // Offset for oil spill color flow
         uOilSpillSpeed: { value: 0.5 }, // Speed of oil spill color flow
         uEffectVisibility: { value: 0.5 }, // Effect visibility based on mouse movement
-        uVisibilityLerpSpeed: { value: 0.008 }, // Very slow lerp for visibility transitions
+        uVisibilityLerpSpeed: { value: 0.01 }, // Very slow lerp for visibility transitions
         uMouseInertia: { value: 1.0 }, // Inertia factor for mouse movement
-        uMouseLerpSpeed: { value: 0.1 }, // Mouse position lerp speed
+        uMouseLerpSpeed: { value: 0.09 }, // Mouse position lerp speed
       },
       vertexShader: /* glsl */ `
         varying vec2 vUv;

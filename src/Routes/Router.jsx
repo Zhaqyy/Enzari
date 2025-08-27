@@ -5,8 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import Transitioner from "../Util/Transition";
 
 import Home from "../Pages/Home";
-import Oto from "../Pages/Oto";
 import Dorian from "../Pages/Dorian";
+import Oto from "../Pages/OTO";
 
 // import Header from "../Component/Header";
 
@@ -29,6 +29,14 @@ const Router = () => {
               element={
                 <Transitioner>
                   <Home />
+                </Transitioner>
+              }
+            />
+            <Route
+              path='/oto'
+              element={
+                <Transitioner>
+                  <Oto />
                 </Transitioner>
               }
             />
