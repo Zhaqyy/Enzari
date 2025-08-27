@@ -225,7 +225,7 @@ const Text = ({ enzariTextRef, studiosTextRef, paragraphRef, animateIn }) => {
 
           <DreiText
               ref={paragraphRef}
-              maxWidth={isMobile ? 5.5 : 7.5}
+              maxWidth={isMobile ? 3 : 7.5}
               textAlign='center'
               fontSize={0.18}
               lineHeight={1.5}
@@ -260,7 +260,7 @@ const Dorian = () => {
   const { contextSafe } = useGSAP({ scope: canvasRef });
 
   useEffect(() => {
-    const handleMouseMove = event => {
+    const handlePointerMove = event => {
       const currentTime = Date.now();
       const deltaTime = currentTime - lastTime.current;
 
@@ -280,10 +280,11 @@ const Dorian = () => {
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    // Use pointer events for both mouse and touch
+    window.addEventListener("pointermove", handlePointerMove);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("pointermove", handlePointerMove);
     };
   }, []);
 
@@ -380,7 +381,7 @@ const Dorian = () => {
               animateIn={animateIn}
             />
 
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} />
+            {/* <OrbitControls enableZoom={false} enablePan={false} autoRotate={false} /> */}
           </Canvas>
         </div>
       </div>

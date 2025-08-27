@@ -24,7 +24,7 @@ body {
 
 // Main festival hero section
 .festival-hero {
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   position: relative;
   overflow: hidden;
@@ -32,6 +32,8 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  // Ensure touch events work properly
+  touch-action: manipulation;
 }
 
 // Background panes container
@@ -63,6 +65,14 @@ body {
   transition: background-color 1.2s ease-in-out;
   // Enable smooth animations for pane sliding
   will-change: transform;
+  // Ensure touch events work properly
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   
 
 
@@ -79,7 +89,8 @@ body {
     z-index: 1;
   }
 
-  &:hover {
+  // Hover effects removed - controlled by JS/GSAP
+  &.active {
     transform: scale(1.02);
     z-index: 2;
   }
@@ -282,6 +293,7 @@ body {
 
   .main-title {
     line-height: 0.8;
+    font-size: max(10vw, 90px);
   }
 
   .play-button {

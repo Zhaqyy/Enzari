@@ -3,6 +3,7 @@ import "../Style/Home.scss";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
+import useIsMobile from "../Util/isMobile";
 
 // Register SplitText plugin
 gsap.registerPlugin(SplitText);
@@ -12,61 +13,17 @@ function Oto() {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPalette, setCurrentPalette] = useState(0);
+  const isMobile = useIsMobile();
 
   // Configuration - Easy to modify
   const CONFIG = {
     // Minimum width of each pane in pixels
     // Panes will stretch to fill the screen width perfectly
-    paneWidth: 90, // Minimum width of each pane in pixels
+    paneWidth: isMobile ? 60 : 90, // Minimum width of each pane in pixels
     // Number of special day panes (will be attached to the last panes)
     numSpecialDays: 4
   };
 
-  // Utility function to adjust color saturation
-  // Usage: adjustSaturation('rgb(180, 220, 230)', 1.2) // 20% more saturated
-  const adjustSaturation = (rgbString, factor = 1.1) => {
-    const match = rgbString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-    if (!match) return rgbString;
-    
-    const [, r, g, b] = match.map(Number);
-    
-    // Convert to HSL for better saturation control
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const l = (max + min) / 2;
-    
-    if (max === min) return rgbString; // Grayscale
-    
-    const d = max - min;
-    const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    
-    // Adjust saturation
-    const newS = Math.min(1, s * factor);
-    
-    // Convert back to RGB
-    const hue2rgb = (p, q, t) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-      return p;
-    };
-    
-    const h = max === r ? (g - b) / d + (g < b ? 6 : 0) :
-              max === g ? (b - r) / d + 2 :
-              (r - g) / d + 4;
-    const hNorm = h / 6;
-    
-    const q = l < 0.5 ? l * (1 + newS) : l + newS - l * newS;
-    const p = 2 * l - q;
-    
-    const newR = Math.round(hue2rgb(p, q, hNorm + 1/3) * 255);
-    const newG = Math.round(hue2rgb(p, q, hNorm) * 255);
-    const newB = Math.round(hue2rgb(p, q, hNorm - 1/3) * 255);
-    
-    return `rgb(${newR}, ${newG}, ${newB})`;
-  };
 
   // Multiple color palettes for dynamic transitions
   // To adjust saturation of any color, use: adjustSaturation('rgb(r,g,b)', factor)
@@ -195,18 +152,30 @@ function Oto() {
 
       // SplitText animation for main title - wait for fonts to load
       const initSplitText = () => {
+        // Always split by chars, but animate only words on mobile for responsiveness
         const split = SplitText.create(".main-title", {
-          type: "chars"
+          type: "words,chars"
         });
-        
-        // Add to timeline with proper timing - start during pane animation
-        tl.from(split.chars, {
-          duration: 1, 
-          y: 100, 
-          autoAlpha: 0, 
-          stagger: 0.05,
-          ease: "power2.out"
-        }, '-=1.5'); // Start 0.5s before the panes finish
+
+        if (isMobile) {
+          // Animate words on mobile
+          tl.from(split.words, {
+            duration: 1,
+            y: 100,
+            autoAlpha: 0,
+            stagger: 0.08,
+            ease: "power2.out"
+          }, '-=1.5');
+        } else {
+          // Animate chars on desktop
+          tl.from(split.chars, {
+            duration: 1,
+            y: 100,
+            autoAlpha: 0,
+            stagger: 0.05,
+            ease: "power2.out"
+          }, '-=1.5');
+        }
       };
 
       // Check if fonts are loaded, if not wait for them
@@ -255,7 +224,7 @@ function Oto() {
   }, []);
 
 
-  const handlePaneHover = (paneRef, isEntering) => {
+  const handlePaneInteraction = (paneRef, isEntering) => {
     const gradientElement = paneRef.querySelector('.pane-gradient');
     const paneId = paneRef.dataset.paneId;
     
@@ -271,14 +240,17 @@ function Oto() {
       state.isFlowingUp = true;
       state.isFlowingDown = false;
       
+      // Add active class for scale effect
+      paneRef.classList.add('active');
+      
       gsap.to(gradientElement, {
         y: '0%',
         duration: 0.5,
         ease: "expo.out",
         onComplete: () => {
           state.isFlowingUp = false;
-          // If we're still hovering, keep it at the top
-          if (paneRef.matches(':hover')) {
+          // Check if still interacting
+          if (paneRef.classList.contains('touching') || paneRef.classList.contains('hovering')) {
             // Stay at top
           } else {
             // Start flowing back down
@@ -291,14 +263,16 @@ function Oto() {
                 state.isFlowingDown = false;
               }
             });
+            // Remove active class
+            paneRef.classList.remove('active');
           }
         }
       });
     } else if (!isEntering && !state.isFlowingDown && state.isFlowingUp) {
-      // If we stop hovering while flowing up, let it complete then flow down
+      // If we stop interacting while flowing up, let it complete then flow down
       // The onComplete callback above will handle this
     } else if (!isEntering && !state.isFlowingUp && !state.isFlowingDown) {
-      // If we're at the top and stop hovering, flow down
+      // If we're at the top and stop interacting, flow down
       state.isFlowingDown = true;
       gsap.to(gradientElement, {
         y: '100%',
@@ -308,6 +282,8 @@ function Oto() {
           state.isFlowingDown = false;
         }
       });
+      // Remove active class
+      paneRef.classList.remove('active');
     }
   };
 
@@ -346,8 +322,37 @@ function Oto() {
             style={{ 
               backgroundColor: colorPalettes[currentPalette][index % colorPalettes[currentPalette].length] 
             }}
-            onMouseEnter={(e) => handlePaneHover(e.currentTarget, true)}
-            onMouseLeave={(e) => handlePaneHover(e.currentTarget, false)}
+            onMouseEnter={(e) => {
+              e.currentTarget.classList.add('hovering');
+              handlePaneInteraction(e.currentTarget, true);
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.classList.remove('hovering');
+              handlePaneInteraction(e.currentTarget, false);
+            }}
+            onTouchStart={(e) => {
+              e.currentTarget.classList.add('touching');
+              handlePaneInteraction(e.currentTarget, true);
+            }}
+            onTouchEnd={(e) => {
+              e.currentTarget.classList.remove('touching');
+              handlePaneInteraction(e.currentTarget, false);
+            }}
+            onTouchMove={(e) => {
+              // Prevent default to avoid scrolling
+              e.preventDefault();
+              // Find which pane we're currently touching
+              const touch = e.touches[0];
+              const element = document.elementFromPoint(touch.clientX, touch.clientY);
+              const pane = element?.closest('.pane');
+              if (pane) {
+                // Remove touching class from all panes
+                document.querySelectorAll('.pane').forEach(p => p.classList.remove('touching'));
+                // Add touching class to current pane
+                pane.classList.add('touching');
+                handlePaneInteraction(pane, true);
+              }
+            }}
             onClick={changeColorPalette}
           >
             {/* Gradient overlay for animation */}
