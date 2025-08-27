@@ -296,9 +296,39 @@ const Dorian = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Animate quick links
+  useEffect(() => {
+    if (animateIn) {
+      gsap.fromTo('.quick-link', 
+        { 
+          opacity: 0,
+          y: -20
+        },
+        { 
+          opacity: 0.8,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power2.out",
+          delay: 1.5
+        }
+      );
+    }
+  }, [animateIn]);
+
   return (
     <div className='dorian-page'>
       <div className='dorian-content'>
+      
+        {/* Quick Links */}
+        <div className='quick-links'>
+          <a href="/" className='quick-link home-link'>
+            HOME
+          </a>
+          <a href="https://www.dorianlods.com/" target="_blank" rel="noopener noreferrer" className='quick-link original-link'>
+            ORIGINAL SITE
+          </a>
+        </div>
       
         <div className='dorian-canvas' ref={canvasRef}>
           <Canvas

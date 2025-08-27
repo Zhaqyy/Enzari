@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../Style/Home.scss";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { SplitText } from "gsap/SplitText";
+
+// Register SplitText plugin
+gsap.registerPlugin(SplitText);
 
 function Oto() {
   const homeRef = useRef();
@@ -160,6 +165,8 @@ function Oto() {
   const gradientTimelines = useRef({});
   const gradientStates = useRef({}); // Track if gradient is flowing up or down
 
+  const { contextSafe } = useGSAP({ scope: homeRef });
+
   useEffect(() => {
     // Set CSS custom properties for dynamic grid
     document.documentElement.style.setProperty('--pane-width', `${CONFIG.paneWidth}px`);
@@ -186,19 +193,31 @@ function Oto() {
         }
       );
 
-      // Animate title
-      tl.fromTo('.main-title', 
-        { 
-          y: 100,
-          opacity: 0 
-        },
-        { 
-          y: 0,
-          opacity: 1,
-          duration: 1,
+      // SplitText animation for main title - wait for fonts to load
+      const initSplitText = () => {
+        const split = SplitText.create(".main-title", {
+          type: "chars"
+        });
+        
+        // Add to timeline with proper timing - start during pane animation
+        tl.from(split.chars, {
+          duration: 1, 
+          y: 100, 
+          autoAlpha: 0, 
+          stagger: 0.05,
           ease: "power2.out"
-        },'>'
-      );
+        }, '-=1.5'); // Start 0.5s before the panes finish
+      };
+
+      // Check if fonts are loaded, if not wait for them
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          initSplitText();
+        });
+      } else {
+        // Fallback for browsers that don't support document.fonts
+        setTimeout(initSplitText, 100);
+      }
 
       // Animate play button
       tl.fromTo('.play-button', 
@@ -346,7 +365,7 @@ function Oto() {
 
       {/* Navigation */}
       <nav className="navigation">
-        <div className="nav-item home-link">HOME</div>
+        <a href="/" className="nav-item home-link">HOME</a>
       </nav>
 
 

@@ -5,7 +5,7 @@ function Home() {
   return (
     <div className="entry-page">
       <div className="entry-content">
-        <h1 className="entry-title">ENZARI</h1>
+        <h1 className="entry-title">ENZARI Test case</h1>
         <div className="entry-links">
           <a href="/oto" className="entry-link">OTO</a>
           <a href="/dorian" className="entry-link">DORIAN</a>

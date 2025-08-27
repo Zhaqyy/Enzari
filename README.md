@@ -1,6 +1,6 @@
-# Cool
+# enzari
 
-_A showcase for a cool_
+_A showcase for a enzari_
 
 <!-- ![Preview](/public/preview.gif) -->
 
