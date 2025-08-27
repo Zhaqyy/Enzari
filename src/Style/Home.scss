@@ -168,6 +168,18 @@ body {
     text-orientation: mixed;
     transform: rotate(180deg);
   }
+
+  .dorian-link {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    margin-left: 2rem;
+    text-decoration: none;
+    
+    &:hover {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
 }
 
 
@@ -307,5 +319,57 @@ body {
   }
   50% {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+// Entry page styles
+.entry-page {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-inter);
+}
+
+.entry-content {
+  text-align: center;
+  color: white;
+}
+
+.entry-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  margin-bottom: 4rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-family: var(--font-teko);
+  line-height: 0.9;
+}
+
+.entry-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.entry-link {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: white;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  padding: 1rem 2rem;
+  border: 1px solid transparent;
+  
+  &:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
   }
 }

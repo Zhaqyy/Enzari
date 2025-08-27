@@ -5,6 +5,8 @@ import { Routes, Route } from "react-router-dom";
 import Transitioner from "../Util/Transition";
 
 import Home from "../Pages/Home";
+import Oto from "../Pages/Oto";
+import Dorian from "../Pages/Dorian";
 
 // import Header from "../Component/Header";
 
@@ -27,6 +29,14 @@ const Router = () => {
               element={
                 <Transitioner>
                   <Home />
+                </Transitioner>
+              }
+            />
+            <Route
+              path='/dorian'
+              element={
+                <Transitioner>
+                  <Dorian />
                 </Transitioner>
               }
             />
